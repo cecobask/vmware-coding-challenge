@@ -16,8 +16,14 @@ const (
 	retryAttempts = 5
 )
 
-type controller struct {
-	logger *zap.Logger
+type Controller interface {
+	GetPageData(req *entity.GetPageDataRequest) (*entity.GetPageDataResponse, error)
+}
+
+func NewController(logger *zap.Logger) Controller {
+	return &controller{
+		logger: logger,
+	}
 }
 
 func (c *controller) GetPageData(req *entity.GetPageDataRequest) (*entity.GetPageDataResponse, error) {
@@ -95,4 +101,19 @@ func doRequest(url string) (pdr entity.GetPageDataResponse) {
 		return pdr
 	}
 	return pdr
+}
+
+type controller struct {
+	logger *zap.Logger
+}
+
+type controllerMock struct {
+	GetPageDataFn func(req *entity.GetPageDataRequest) (*entity.GetPageDataResponse, error)
+}
+
+func (c *controllerMock) GetPageData(req *entity.GetPageDataRequest) (*entity.GetPageDataResponse, error) {
+	if c.GetPageDataFn != nil {
+		return c.GetPageDataFn(req)
+	}
+	return &entity.GetPageDataResponse{}, nil
 }

@@ -1,0 +1,20 @@
+name: build and test the project
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Set up GoLang
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+      - name: Build project
+        run: go build cmd/apiserver/main.go
+      - name: Run unit tests
+        run: go test ./...

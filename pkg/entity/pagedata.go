@@ -31,13 +31,13 @@ const (
 	limitMin              = 1
 	queryLimit            = "limit"
 	querySortKey          = "sortKey"
-	sortKeyRelevanceScore = "relevanceScore"
-	sortKeyViews          = "views"
+	SortKeyRelevanceScore = "relevanceScore"
+	SortKeyViews          = "views"
 )
 
 var allowedSortKeys = map[string]bool{
-	sortKeyRelevanceScore: true,
-	sortKeyViews:          true,
+	SortKeyRelevanceScore: true,
+	SortKeyViews:          true,
 }
 
 func NewGetPageDataRequest(req *http.Request) (*GetPageDataRequest, error) {
@@ -51,7 +51,7 @@ func NewGetPageDataRequest(req *http.Request) (*GetPageDataRequest, error) {
 		return nil, ErrorBadRequest(details)
 	}
 	if !allowedSortKeys[sortKeyQuery[0]] {
-		details := fmt.Sprintf("the query parameter %s can only be one of the following - %s / %s", querySortKey, sortKeyRelevanceScore, sortKeyViews)
+		details := fmt.Sprintf("the query parameter %s can only be one of the following - %s / %s", querySortKey, SortKeyRelevanceScore, SortKeyViews)
 		return nil, ErrorBadRequest(details)
 	}
 	limitQuery, ok := req.URL.Query()[queryLimit]
@@ -74,9 +74,9 @@ func (resp *GetPageDataResponse) Render(w http.ResponseWriter, r *http.Request) 
 	sort.Slice(resp.Data, func(a, b int) bool {
 		var result bool
 		switch resp.Req.SortKey {
-		case sortKeyRelevanceScore:
+		case SortKeyRelevanceScore:
 			result = resp.Data[a].RelevanceScore < resp.Data[b].RelevanceScore
-		case sortKeyViews:
+		case SortKeyViews:
 			result = resp.Data[a].Views < resp.Data[b].Views
 		}
 		return result
@@ -87,4 +87,11 @@ func (resp *GetPageDataResponse) Render(w http.ResponseWriter, r *http.Request) 
 	}
 	render.JSON(w, r, &resp)
 	return nil
+}
+
+func (resp *GetPageDataResponse) String() (result string) {
+	if resp != nil {
+		result += fmt.Sprintf("data = %v; count = %d; error = %v", resp.Data, resp.Count, resp.Error)
+	}
+	return
 }

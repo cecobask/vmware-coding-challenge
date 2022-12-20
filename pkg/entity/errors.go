@@ -16,8 +16,9 @@ func (err *ResponseError) Error() string {
 	return fmt.Sprintf("error message = %s; status code = %d; details = %s", err.Message, err.StatusCode, err.Details)
 }
 
-func (err *ResponseError) Render(_ http.ResponseWriter, r *http.Request) error {
+func (err *ResponseError) Render(w http.ResponseWriter, r *http.Request) error {
 	render.Status(r, err.StatusCode)
+	render.JSON(w, r, err)
 	return nil
 }
 
