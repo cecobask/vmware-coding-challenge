@@ -1,9 +1,9 @@
 module github.com/cecobask/vmware-coding-challenge
 
-go 1.18
+go 1.24
 
 require (
-	github.com/go-chi/chi/v5 v5.0.8
+	github.com/go-chi/chi/v5 v5.4.0
 	github.com/go-chi/render v1.0.2
 	go.uber.org/zap v1.24.0
 )
